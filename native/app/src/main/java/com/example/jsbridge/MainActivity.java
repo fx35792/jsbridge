@@ -3,9 +3,11 @@ package com.example.jsbridge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.JsResult;
+import android.webkit.JavascriptInterface;
+//import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -35,19 +37,23 @@ public class MainActivity extends AppCompatActivity {
 
         webView.loadUrl("http://192.168.3.36:8080/?timeStamp=" + date.getTime());
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-                if (!message.startsWith("jsbridge://")) {
-                    return super.onJsAlert(view, url, message, result);
-                }
+//        webView.setWebChromeClient(new WebChromeClient() {
+//            @Override
+//            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+//                if (!message.startsWith("jsbridge://")) {
+//                    return super.onJsAlert(view, url, message, result);
+//                }
+//
+//                String text = message.substring(message.indexOf("=") + 1);
+//                self.showNativeDialog(text);
+//                result.confirm();
+//                return true;
+//            }
+//        });
 
-                String text = message.substring(message.indexOf("=") + 1);
-                self.showNativeDialog(text);
-                result.confirm();
-                return true;
-            }
-        });
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.addJavascriptInterface(new NativeBridge(this), "NativeBridge");
+
 
         showBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,8 +77,55 @@ public class MainActivity extends AppCompatActivity {
         webView.evaluateJavascript(jsCode, null);
     }
 
-    private void showNativeDialog(String text) {
-        //调取原生方法
-        new AlertDialog.Builder(this).setMessage(text).create().show();
+//    private void showNativeDialog(String text) {
+//        //调取原生方法
+//        new AlertDialog.Builder(this).setMessage(text).create().show();
+//    }
+
+    class NativeBridge {
+        private Context ctx;
+
+        NativeBridge(Context ctx) {
+            this.ctx = ctx;
+        }
+
+        @JavascriptInterface
+        public void showNativeDialog(String text) {
+            //调取原生方法
+            new AlertDialog.Builder(ctx).setMessage(text).create().show();
+        }
+
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

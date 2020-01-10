@@ -25,7 +25,8 @@
     })
 
     function showNativeDialog(text) {
-      window.alert('jsbridge://showNativeDialog?text=' + text);
+      // window.alert('jsbridge://showNativeDialog?text=' + text);
+      window.NativeBridge.showNativeDialog(text);
     }
 
   </script>
@@ -33,7 +34,7 @@
 
 <body>
   <div>
-    <input type="text" placeholder="输入内容111" id="editText">
+    <input type="text" placeholder="输入内容" id="editText">
   </div>
   <div>
     <button id="showBtn">显示Native弹框</button>
